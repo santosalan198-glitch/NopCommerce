@@ -1,0 +1,36 @@
+<suite name="Integration Suite" verbose="1">
+    <parameter name="browser" value="chrome"/>
+    <listeners>
+        <listener class-name="org.listeners.TestListener" />
+    </listeners>
+    <test name="Registro - Integration">
+        <groups>
+            <run>
+                <include name="Integration"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="org.tests.RegistroTest"/>
+        </classes>
+    </test>
+    <test name="Login - Integration">
+        <groups>
+            <run>
+                <include name="Integration"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="org.tests.LoginTest"/>
+        </classes>
+    </test>
+    <test name="Ordenes - Integration">
+        <groups>
+            <run>
+                <include name="Integration"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="org.tests.OrdenesTest"/>
+        </classes>
+    </test>
+</suite>

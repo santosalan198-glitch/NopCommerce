@@ -1,0 +1,56 @@
+name: Selenium Tests Suite with Allure Report
+
+on:
+  push:
+    branches: [ "main" ] # Cambiado a main que es tu rama actual
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11' # Tu pom.xml dice Java 11
+          distribution: 'temurin'
+
+      - name: Cache Maven Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-${{ runner.os }}
+
+      - name: Run Tests
+        # Usamos 'verify' porque incluye la fase de test y empaquetado
+        run: mvn clean verify
+
+      - name: Install Allure
+        run: |
+          ALLURE_VERSION=2.24.0
+          wget https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz
+          tar -zxvf allure-${ALLURE_VERSION}.tgz
+          echo "$PWD/allure-${ALLURE_VERSION}/bin" >> $GITHUB_PATH
+
+      - name: Generate Allure Report
+        run: allure generate target/allure-results --clean -o allure-report
+
+      - name: Deploy To GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: allure-report
+
+      - name: Show Allure Report URL
+        run: |
+          echo "## 🔎 Allure Report" >> $GITHUB_STEP_SUMMARY
+          # Reemplaza 'tu-usuario' y 'tu-repo' con tus datos reales de GitHub
+          echo "[Ver Reporte](https://tu-usuario.github.io/tu-repo/)" >> $GITHUB_STEP_SUMMARY

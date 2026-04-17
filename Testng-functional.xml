@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Functional Suite" verbose="1">
+    <parameter name="browser" value="chrome"/>
+    <listeners>
+        <listener class-name="org.listeners.TestListener" />
+    </listeners>
+    <test name="Registro - Functional">
+        <groups>
+            <run>
+                <include name="Functional"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="org.tests.RegistroTest"/>
+        </classes>
+    </test>
+    <test name="Login - Functional">
+        <groups>
+            <run>
+                <include name="Functional"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="org.tests.LoginTest"/>
+        </classes>
+    </test>
+    <test name="Ordenes - Functional">
+        <groups>
+            <run>
+                <include name="Functional"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="org.tests.OrdenesTest"/>
+        </classes>
+    </test>
+</suite>
