@@ -36,18 +36,22 @@ public class BaseTest {
         WebDriver driver;
 
         if (browser.equalsIgnoreCase("chrome")) {
-            // 1. Primero creas las opciones
             ChromeOptions options = new ChromeOptions();
 
-            // 2. Configuras todas las opciones
+            // --- CONFIGURACIÓN PARA GITHUB ACTIONS (HEADLESS) ---
+            options.addArguments("--headless=new"); // Ejecución sin ventana
+            options.addArguments("--no-sandbox"); // Requerido para entornos Linux/Docker
+            options.addArguments("--disable-dev-shm-usage"); // Evita problemas de memoria en contenedores
+            options.addArguments("--window-size=1920,1080"); // Define un tamaño de pantalla virtual
+
             options.addArguments("--incognito");
             options.addArguments("--disable-blink-features=AutomationControlled");
             options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
             options.setExperimentalOption("useAutomationExtension", false);
             options.addArguments("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36");
 
-            // 3. RECIÉN AQUÍ creas el driver pasándole las opciones (Solo una vez)
             driver = new ChromeDriver(options);
+
         } else if (browser.equalsIgnoreCase("firefox")) {
             driver = new FirefoxDriver(new FirefoxOptions());
         } else if (browser.equalsIgnoreCase("edge")) {
