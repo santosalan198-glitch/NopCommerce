@@ -3,6 +3,8 @@ name: Selenium Tests Suite with Allure Report
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 permissions:
   contents: write
@@ -20,22 +22,15 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-
-      - name: Cache Maven Dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.m2
-          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            maven-${{ runner.os }}
+          cache: 'maven'
 
       - name: Run Tests
-        # Agregamos -DskipTests=false para asegurar ejecución
-        run: mvn clean verify
-        continue-on-error: true # Permite que el flujo siga aunque un test falle
+        # El continue-on-error es vital para que el reporte se genere aunque fallen los tests
+        run: mvn clean verify -DskipTests=false
+        continue-on-error: true
 
       - name: Install Allure
-        if: always() # Esto asegura que se instale Allure aunque fallen los tests
+        if: always()
         run: |
           ALLURE_VERSION=2.24.0
           wget https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz
@@ -43,11 +38,17 @@ jobs:
           echo "$PWD/allure-${ALLURE_VERSION}/bin" >> $GITHUB_PATH
 
       - name: Generate Allure Report
-        if: always() # Genera el reporte siempre
-        run: allure generate allure-results --clean -o allure-report
+        if: always()
+        run: |
+          echo "=== Verificando archivos de resultados ==="
+          # Esto nos confirmará si el pom.xml generó los JSON en la raíz
+          ls -R allure-results || echo "ADVERTENCIA: No se encontró la carpeta allure-results"
+          
+          echo "=== Generando Reporte Final ==="
+          allure generate allure-results --clean -o allure-report
 
       - name: Deploy To GitHub Pages
-        if: always() # Sube el reporte siempre
+        if: always()
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -56,5 +57,8 @@ jobs:
       - name: Show Allure Report URL
         if: always()
         run: |
-          echo "## 🔎 Allure Report" >> $GITHUB_STEP_SUMMARY
-          echo "[Ver Reporte](https://santosalan198-glitch.github.io/NopCommerce/)" >> $GITHUB_STEP_SUMMARY
+          echo "##  Reporte de Automatización" >> $GITHUB_STEP_SUMMARY
+          echo "El reporte ha sido actualizado exitosamente." >> $GITHUB_STEP_SUMMARY
+          echo "[ CLIC AQUÍ PARA VER EL REPORTE](https://santosalan198-glitch.github.io/NopCommerce/)" >> $GITHUB_STEP_SUMMARY
+          
+          
