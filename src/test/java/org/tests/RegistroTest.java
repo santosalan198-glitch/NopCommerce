@@ -117,12 +117,15 @@
             Assert.assertTrue(registroPage.obtenerTextoDeTodaLaPagina().contains(d[7]), "Fallo: Apellido obligatorio");
         }
 
-        private void validarEmailObligatorio() {
-            String[] d = obtenerDatosDeExcel("Registro sin Email");
-            registroPage.RegistrarConCampos(d[0], d[1], null, d[3], d[4], d[5]);
-            Assert.assertTrue(registroPage.obtenerTextoDeTodaLaPagina().contains(d[7]), "Fallo: Email obligatorio");
-        }
 
+        private void validarEmailObligatorio() {
+        String[] d = obtenerDatosDeExcel("Registro sin Email");
+        registroPage.RegistrarConCampos(d[0], d[1], null, d[3], d[4], d[5]);
+        String textoPagina = registroPage.obtenerTextoDeTodaLaPagina();
+        System.out.println("DEBUG - Texto buscado: " + d[7]);
+        System.out.println("DEBUG - Texto encontrado en página: " + textoPagina);
+         Assert.assertTrue(textoPagina.contains(d[7]), "Fallo: Email obligatorio. No se encontró: " + d[7]);
+        }
         private void validarTelefonoObligatorio() {
             String[] d = obtenerDatosDeExcel("Registro sin telefono");
             registroPage.RegistrarConCampos(d[0], d[1], d[2], null, d[4], d[5]);
