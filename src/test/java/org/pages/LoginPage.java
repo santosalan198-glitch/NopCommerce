@@ -4,6 +4,7 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import jdk.jfr.Description;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 @Description ("Clase que contiene los elementos y acciones de la página de Login y recuperación de cuenta.")
 
@@ -63,7 +64,10 @@ public class LoginPage extends BasePage{
 
     @Step ("Obtener mensaje de credenciales incorrectas")
     public String mensajeCredencialesIncorrectas (){
-        return getText(mensajeCredencialesIncorrectas);
+
+        By locator = By.xpath("//*[@id='account-login']/div[1]");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+        return driver.findElement(locator).getText();
     }
 
     @Step ("Obtener el mensaje de error para usuario no registrado")
